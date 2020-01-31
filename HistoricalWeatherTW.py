@@ -15,6 +15,7 @@ from enum import Enum
 from io import StringIO
 from pathlib import Path
 import os
+import dateutil.relativedelta
 
 DEBUG_MODE = False
 
@@ -25,15 +26,29 @@ class QueryFormat(Enum):
     YEAR = 'YEAR'
 
 
+def get_delta_day(step: int, query_format: QueryFormat):
+    return dateutil.relativedelta.relativedelta(days=step) if query_format is QueryFormat.DAY else \
+        dateutil.relativedelta.relativedelta(months=step) if query_format is QueryFormat.MONTH else \
+        dateutil.relativedelta.relativedelta(years=step)
+
+
+def generator_begin_to_end(begin, end, query_format: QueryFormat, step=1):
+    return range((END_DATE - BEGIN_DATE).days + step) if query_format is QueryFormat.DAY else \
+        range(END_DATE.month - BEGIN_DATE.month + step) if query_format is QueryFormat.MONTH else \
+        range(END_DATE.year - BEGIN_DATE.year + step)
+
+
 def get_query_url(url_format: QueryFormat):
     root = "https://e-service.cwb.gov.tw/HistoryDataQuery/"
-    query_type = "DayDataController.do?" if url_format == QueryFormat.DAY else \
-        "MonthDataController.do?" if url_format == QueryFormat.MONTH else "YearDataController.do?"
+    query_type = "DayDataController.do?" if url_format is QueryFormat.DAY else \
+        "MonthDataController.do?" if url_format is QueryFormat.MONTH else "YearDataController.do?"
     tail = "command=viewMain&station="
     return f'{root}{query_type}{tail}'
 
 
-def get_weather(date, station_id, station_name, query_format: QueryFormat) -> tuple:
+def get_weather(date: datetime.date,
+                station_id: int, station_name: str,
+                query_format: QueryFormat) -> tuple:
     """
     :return: (dict, list_title, list_title_detail)
     """
@@ -44,6 +59,9 @@ def get_weather(date, station_id, station_name, query_format: QueryFormat) -> tu
 
     # 兩次URL編碼
     url_station_name = urllib.parse.quote(urllib.parse.quote(station_name))
+
+    date = date.strftime('%Y-%m-%d') if query_format is query_format.DAY else \
+        date.strftime('%Y-%m') if query_format is query_format.MONTH else date.strftime('%Y')
     url = get_query_url(query_format) + str(station_id) + "&stname=" + url_station_name + "&datepicker=" + str(date)
     req = urllib.request.Request(url)
     f = urllib.request.urlopen(req)
@@ -71,7 +89,7 @@ def get_weather(date, station_id, station_name, query_format: QueryFormat) -> tu
                 continue
             data_list.append(str(tr_text))
         if data_list:
-            dict_data[n_row+1] = data_list
+            dict_data[n_row + 1] = data_list
 
     return dict_data, list_title, list_title_detail
 
@@ -83,7 +101,8 @@ def main(output_path):
         df = pd.DataFrame(df, columns=df.columns[0:2])  # get station_name and ID only
 
     os.makedirs(output_path.parent, exist_ok=True)
-    with open(str(output_path.resolve()), 'w', encoding='utf-8-sig', newline='') as wf:  # utf8 with BOM
+    with open(str(output_path.resolve()), 'w', encoding='utf-8-sig',  # utf8 with BOM
+              newline='') as wf:  # newline='' Avoid unnecessary blank lines
         csv_writer = csv.writer(wf, delimiter=",",  # \t
                                 lineterminator="\r\n")
 
@@ -93,14 +112,13 @@ def main(output_path):
 
             headers = ["Date", 'station name']
 
-            for i in range((END_DATE - BEGIN_DATE).days + 1):
-                day = BEGIN_DATE + datetime.timedelta(days=i)
-                date = str(day)
-                weather_dict, title_list, title_detail_list = get_weather(date, station_id, station_name, QUERY_FORMAT)
+            for delta in generator_begin_to_end(END_DATE, BEGIN_DATE, QUERY_FORMAT):
+                day = BEGIN_DATE + get_delta_day(delta, QUERY_FORMAT)  # datetime.timedelta(days=delta)
+                weather_dict, title_list, title_detail_list = get_weather(day, station_id, station_name, QUERY_FORMAT)
 
                 if weather_dict == {}:
-                    print(f'empty data of {station_name} id:{station_id}')
-                    print(f'handle {station_name} failed!')
+                    print(f'{day} empty data of {station_name} id:{station_id}')
+                    print(f'{day} handle {station_name} failed!')
                     break
 
                 if need_write_title:
@@ -114,16 +132,16 @@ def main(output_path):
                     value_list = [str(_) for _ in value_list]
                     csv_writer.writerow(row_data + value_list)
 
-                print(f'{station_name} ok!')
+                print(f'{day} {station_name} ok!')
         print("All Done!")
 
 
 if __name__ == '__main__':
     STATION_CSV = 'config/station_test.csv'
-    OUTPUT_PATH = Path(f'temp/result.csv')
-    BEGIN_DATE = datetime.date(2016, 1, 1)
-    END_DATE = datetime.date(2016, 1, 1)
-    QUERY_FORMAT = QueryFormat.DAY
+    OUTPUT_PATH = Path(f'temp/year_result.csv')
+    BEGIN_DATE = datetime.date(2019, 10, 1)
+    END_DATE = datetime.date(2019, 10, 2)
+    QUERY_FORMAT = QueryFormat.DAY  # FIXME: If the format is the month, the interval must be the same year.
     CONVERT2NUM = True  # convert to number or not
     main(OUTPUT_PATH)
     os.startfile(OUTPUT_PATH)
