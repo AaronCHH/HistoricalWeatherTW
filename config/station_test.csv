@@ -1,0 +1,4 @@
+# you can find these from the `測站資訊 <https://e-service.cwb.gov.tw/wdps/obs/state.htm>`_
+ID,Name,Altitude,Longitude,Latitude,City,Address
+"466940","基隆",26.7,121.7405,25.1333,"基隆市","仁愛區港西街6號6樓(海港大樓6樓)"
+"466900","淡水",19,121.4489,25.1649,"新北市","淡水區中正東路42巷6號"
