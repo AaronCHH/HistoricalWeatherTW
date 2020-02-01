@@ -1,25 +1,52 @@
+.. sectnum::
+
 HistoricalWeatherTW 台灣歷史天氣爬蟲
 ==============================================
 
 Data from `觀測資料查詢系統 <http://e-service.cwb.gov.tw/HistoryDataQuery/>`_
 
-Usage 使用
+Usage
 ============
+This script is to crawl the information of `觀測資料查詢 <https://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp>`_ website
 
-原資料會存在一些非數字形式(例如風向不定V，有雨跡T等)，以下開啟參數會將其簡單替換成數字：
+run the following of ``collect_weather_tw`` you will see the result!
 
-`conv2num = True`
+.. code-block:: python
 
-修改所需資料的起始時間及結束時間：
+    def collect_weather_tw(station_csv_path: Path, output_path,
+                           end_date: datetime.date, begin_date: datetime.date,
+                           query_format,
+                           convert2num):
 
-`begin_date = datetime.date(2016,1,1)`
+**You can refer to ``__init__.py`` for more help**
 
-`end_date = datetime.date(2016,12,31)`
-  
+QUICKLY START
+---------------
+
+.. code-block:: python
+
+    if __name__ == '__main__':
+        STATION_CSV = '../config/CSV/station_test.csv'
+        OUTPUT_PATH = Path(f'../temp/year_result.csv')
+        BEGIN_DATE = datetime.date(2019, 10, 1)
+        END_DATE = datetime.date(2019, 10, 2)
+        QUERY_FORMAT = QueryFormat.DAY
+        CONVERT2NUM = True
+        collect_weather_tw(Path(STATION_CSV), OUTPUT_PATH,
+                           BEGIN_DATE, END_DATE,
+                           QUERY_FORMAT,
+                           CONVERT2NUM)
+        os.startfile(OUTPUT_PATH)
+
+.. note:: station.csv (you can find it from the https://e-service.cwb.gov.tw/wdps/obs/state.htm)
+
 Data 資料
 =============
 
 資料會以觀測站ID+站名儲存
+
+.. note:: There have some non-numeric forms of the original data.
+    Such as indefinite wind direction V, rain track T, etc. the variable of ``CONVERT2NUM`` will replace them with numbers.
 
 資料欄位如下
 --------------------
@@ -56,6 +83,10 @@ Data 資料
 
 Release note
 ======================
+
+v4.0
+---------
+    Encapsulated as API
 
 v3.0
 ---------
