@@ -1,10 +1,5 @@
-"""
-This script is to crawl the information of `觀測資料查詢 <https://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp>_ website
+__all__ = ('collect_weather_tw', 'QueryFormat')
 
-How to use:
-    1. select the station.csv (you can find it from the https://e-service.cwb.gov.tw/wdps/obs/state.htm)
-    2. run.
-"""
 import csv
 import datetime
 import pandas as pd
@@ -32,10 +27,11 @@ def get_delta_day(step: int, query_format: QueryFormat):
         dateutil.relativedelta.relativedelta(years=step)
 
 
-def generator_begin_to_end(begin, end, query_format: QueryFormat, step=1):
-    return range((END_DATE - BEGIN_DATE).days + step) if query_format is QueryFormat.DAY else \
-        range(END_DATE.month - BEGIN_DATE.month + step) if query_format is QueryFormat.MONTH else \
-        range(END_DATE.year - BEGIN_DATE.year + step)
+def generator_begin_to_end(begin: datetime.date, end: datetime.date,
+                           query_format: QueryFormat, step=1):
+    return range((end - begin).days + step) if query_format is QueryFormat.DAY else \
+        range(end.month - begin.month + step) if query_format is QueryFormat.MONTH else \
+        range(end.year - begin.year + step)
 
 
 def get_query_url(url_format: QueryFormat):
@@ -48,7 +44,8 @@ def get_query_url(url_format: QueryFormat):
 
 def get_weather(date: datetime.date,
                 station_id: int, station_name: str,
-                query_format: QueryFormat) -> tuple:
+                query_format: QueryFormat,
+                convert2num) -> tuple:
     """
     :return: (dict, list_title, list_title_detail)
     """
@@ -79,7 +76,7 @@ def get_weather(date: datetime.date,
         data_list = []
         for td in tag_tr.findAll('td'):
             tr_text = td.get_text().rstrip()
-            if CONVERT2NUM:
+            if convert2num:
                 if tr_text == "T":
                     data_list.append(0.05)  # 有雨跡，降雨量小於0.01
                 elif tr_text in ('X', 'V', '/'):  # 記錄錯誤, 風向不定, 風向不定
@@ -94,8 +91,11 @@ def get_weather(date: datetime.date,
     return dict_data, list_title, list_title_detail
 
 
-def main(output_path):
-    with open(STATION_CSV, 'r', encoding='utf-8') as station_csv:
+def collect_weather_tw(station_csv_path: Path, output_path,
+                       end_date: datetime.date, begin_date: datetime.date,
+                       query_format,
+                       convert2num):
+    with open(str(station_csv_path), 'r', encoding='utf-8') as station_csv:
         list_data = [line for line in station_csv if not line.startswith('#')]  # ignore row of starts with '#'
         df = pd.read_csv(StringIO(''.join(list_data)))
         df = pd.DataFrame(df, columns=df.columns[0:2])  # get station_name and ID only
@@ -112,9 +112,10 @@ def main(output_path):
 
             headers = ["Date", 'station name']
 
-            for delta in generator_begin_to_end(END_DATE, BEGIN_DATE, QUERY_FORMAT):
-                day = BEGIN_DATE + get_delta_day(delta, QUERY_FORMAT)  # datetime.timedelta(days=delta)
-                weather_dict, title_list, title_detail_list = get_weather(day, station_id, station_name, QUERY_FORMAT)
+            for delta in generator_begin_to_end(end_date, begin_date, query_format):
+                day = begin_date + get_delta_day(delta, query_format)  # datetime.timedelta(days=delta)
+                weather_dict, title_list, title_detail_list = get_weather(day, station_id, station_name,
+                                                                          query_format, convert2num)
 
                 if weather_dict == {}:
                     print(f'{day} empty data of {station_name} id:{station_id}')
@@ -137,11 +138,14 @@ def main(output_path):
 
 
 if __name__ == '__main__':
-    STATION_CSV = 'config/station_test.csv'
-    OUTPUT_PATH = Path(f'temp/year_result.csv')
+    STATION_CSV = '../config/CSV/station_test.csv'
+    OUTPUT_PATH = Path(f'../temp/year_result.csv')
     BEGIN_DATE = datetime.date(2019, 10, 1)
     END_DATE = datetime.date(2019, 10, 2)
     QUERY_FORMAT = QueryFormat.DAY  # FIXME: If the format is the month, the interval must be the same year.
     CONVERT2NUM = True  # convert to number or not
-    main(OUTPUT_PATH)
+    collect_weather_tw(Path(STATION_CSV), OUTPUT_PATH,
+                       BEGIN_DATE, END_DATE,
+                       QUERY_FORMAT,
+                       CONVERT2NUM)
     os.startfile(OUTPUT_PATH)

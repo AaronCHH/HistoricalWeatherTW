@@ -3,3 +3,6 @@
 # bs4
 beautifulsoup4  # BeautifulSoup, bs4
 lxml
+
+# other
+PyYAML
