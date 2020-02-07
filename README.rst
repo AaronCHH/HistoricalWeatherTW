@@ -3,27 +3,40 @@
 HistoricalWeatherTW 台灣歷史天氣爬蟲
 ==============================================
 
+This script is to crawl the information of `觀測資料查詢 <https://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp>`_ website
+
 Data from `觀測資料查詢系統 <http://e-service.cwb.gov.tw/HistoryDataQuery/>`_
 
 Usage
 ============
-This script is to crawl the information of `觀測資料查詢 <https://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp>`_ website
 
-run the following of ``collect_weather_tw`` you will see the result!
+#. Prepare `station.csv`_.
 
-.. code-block:: python
+    .. note:: station.csv (you can find it from the https://e-service.cwb.gov.tw/wdps/obs/state.htm)
 
-    def collect_weather_tw(station_csv_path: Path, output_path,
-                           end_date: datetime.date, begin_date: datetime.date,
-                           query_format,
-                           convert2num):
+#. run the function of ``collect_weather_tw`` you will see the result!
 
-**You can refer to ``__init__.py`` for more help**
+    .. code-block:: python
+
+        def collect_weather_tw(station_csv_path: Path, output_path,
+                               end_date: datetime.date, begin_date: datetime.date,
+                               query_format,
+                               convert2num):
+
+**You can refer to** `__init__.py`_ **for more help**
+
+    1. Prepare `config.yaml`_ and use this path as input parameter
+    #. run `__init__.py`_
 
 QUICKLY START
 ---------------
 
 .. code-block:: python
+
+    from Carson.Tool.HistoricalWeatherTW import collect_weather_tw, QueryFormat
+    from pathlib import Path
+    import datetime
+    import os
 
     if __name__ == '__main__':
         STATION_CSV = '../config/CSV/station_test.csv'
@@ -38,9 +51,7 @@ QUICKLY START
                            CONVERT2NUM)
         os.startfile(OUTPUT_PATH)
 
-.. note:: station.csv (you can find it from the https://e-service.cwb.gov.tw/wdps/obs/state.htm)
-
-Data 資料
+Data
 =============
 
 資料會以觀測站ID+站名儲存
@@ -108,3 +119,7 @@ V2.0
 V1.0
 ---------
 第一版
+
+.. _`__init__.py`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/temp/Carson/Tool/HistoricalWeatherTW/__init__.py
+.. _`config.yaml`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/config/config.yaml
+.. _`station.csv`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/config/CSV/station.csv
