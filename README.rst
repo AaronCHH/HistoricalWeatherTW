@@ -51,46 +51,27 @@ QUICKLY START
                            CONVERT2NUM)
         os.startfile(OUTPUT_PATH)
 
-Data
-=============
 
-資料會以觀測站ID+站名儲存
+
+Data
+================
+
+The output depends on ``QueryFormat``!
+
+.. csv-table:: Day
+   :file: test/output/day.csv
+   :header-rows: 1
+
+.. csv-table:: MONTH
+   :file: test/output/month.csv
+   :header-rows: 1
+
+.. csv-table:: YEAR
+   :file: test/output/year.csv
+   :header-rows: 1
 
 .. note:: There have some non-numeric forms of the original data.
     Such as indefinite wind direction V, rain track T, etc. the variable of ``CONVERT2NUM`` will replace them with numbers.
-
-資料欄位如下
---------------------
-
-`ObsTime` 觀測時間(LST) 
-
-`StnPres` 測站氣壓(hPa) 
-
-`SeaPres`	海平面氣壓(hPa)
-
-`Temperature` 氣溫(℃)
-
-`Tddewpoint` 露點溫度(℃)
-
-`RH` 相對溼度(%)
-
-`WS` 風速(m/s)
-
-`WD` 風向(360degree)
-
-`WSGust` 最大陣風(m/s)
-
-`WDGust` 最大陣風風向(360degree)
-
-`Precp` 降水量(mm)
-
-`PrecpHour` 降水時數(hr)
-
-`SunShine` 日照時數(hr)
-
-`GloblRad` 全天空日射量(MJ/㎡)
-
-`Visb` 能見度(km)
 
 Release note
 ======================
@@ -120,6 +101,6 @@ V1.0
 ---------
 第一版
 
-.. _`__init__.py`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/temp/Carson/Tool/HistoricalWeatherTW/__init__.py
+.. _`__init__.py`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/__init__.py
 .. _`config.yaml`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/config/config.yaml
 .. _`station.csv`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/config/CSV/station.csv
