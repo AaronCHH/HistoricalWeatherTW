@@ -1,4 +1,4 @@
-__all__ = ('collect_weather_tw', )
+__all__ = ('collect_weather_tw', 'QueryFormat',)
 __author__ = ['Carson', 'Sign.X.er']
 __version__ = '4.1.0'
 
