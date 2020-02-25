@@ -101,6 +101,6 @@ V1.0
 ---------
 第一版
 
-.. _`__init__.py`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/__init__.py
+.. _`__init__.py`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/__init__.py#L15-L33
 .. _`config.yaml`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/config/config.yaml
 .. _`station.csv`: https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/Carson/Tool/HistoricalWeatherTW/config/CSV/station.csv
