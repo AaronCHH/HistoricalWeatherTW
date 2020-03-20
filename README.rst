@@ -1,5 +1,51 @@
 .. sectnum::
 
+.. raw:: html
+
+    <p align="left">
+
+        <a href="https://pypi.org/project/carson-tool.HistoricalWeatherTW/">
+        <img src="https://img.shields.io/static/v1?&style=plastic&logo=pypi&label=App&message=HistoricalWeather&color=00FFFF"/></a>
+
+        <a href="https://pypi.org/project/carson-tool.HistoricalWeatherTW/">
+        <img src="https://img.shields.io/pypi/v/carson-tool.HistoricalWeatherTW.svg?&style=plastic&logo=pypi&color=00FFFF"/></a>
+
+        <a href="https://pypi.org/project/carson-tool.HistoricalWeatherTW/">
+        <img src="https://img.shields.io/pypi/pyversions/carson-tool.HistoricalWeatherTW.svg?&style=plastic&logo=pypi&color=00FFFF"/></a>
+
+        <a href="https://github.com/CarsonSlovoka/HistoricalWeatherTW/blob/master/LICENSE">
+        <img src="https://img.shields.io/pypi/l/carson-tool.HistoricalWeatherTW.svg?&style=plastic&logo=pypi&color=00FFFF"/></a>
+
+        <br>
+
+        <a href="https://github.com/CarsonSlovoka/HistoricalWeatherTW">
+        <img src="https://img.shields.io/github/last-commit/CarsonSlovoka/HistoricalWeatherTW?&style=plastic&logo=github&color=00FF00"/></a>
+
+        <img src="https://img.shields.io/github/commit-activity/y/CarsonSlovoka/HistoricalWeatherTW?&style=plastic&logo=github&color=0000FF"/></a>
+
+        <a href="https://github.com/CarsonSlovoka/HistoricalWeatherTW">
+        <img src="https://img.shields.io/github/contributors/CarsonSlovoka/HistoricalWeatherTW?&style=plastic&logo=github&color=111111"/></a>
+
+        <a href="https://github.com/CarsonSlovoka/HistoricalWeatherTW">
+        <img src="https://img.shields.io/github/repo-size/CarsonSlovoka/HistoricalWeatherTW?&style=plastic&logo=github"/></a>
+
+        <br>
+
+        <a href="https://pepy.tech/project/carson-tool-historicalweathertw">
+        <img src="https://pepy.tech/badge/carson-tool-historicalweathertw"/></a>
+
+        <a href="https://pepy.tech/project/carson-tool-historicalweathertw/month">
+        <img src="https://pepy.tech/badge/carson-tool-historicalweathertw/month"/></a>
+
+        <a href="https://pepy.tech/project/carson-tool-historicalweathertw/week">
+        <img src="https://pepy.tech/badge/carson-tool-historicalweathertw/week"/></a>
+
+        <!--
+            <img src="https://img.shields.io/github/commits-since/m/CarsonSlovoka/HistoricalWeatherTW/Dev?label=commits%20to%20be%20deployed"/></a>
+        -->
+
+    </p>
+
 HistoricalWeatherTW 台灣歷史天氣爬蟲
 ==============================================
 
