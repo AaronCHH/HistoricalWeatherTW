@@ -43,7 +43,7 @@ def get_query_url(url_format: QueryFormat):
 
 
 def get_weather(date: datetime.date,
-                station_id: int, station_name: str,
+                station_id: int, station_name: str, station_alt:str,
                 query_format: QueryFormat,
                 convert2num) -> tuple:
     """
@@ -57,9 +57,12 @@ def get_weather(date: datetime.date,
     # 兩次URL編碼
     url_station_name = urllib.parse.quote(urllib.parse.quote(station_name))
 
+    # 增加測站海拔字串
+    url_station_alt = str(station_alt) + 'm'
+
     date = date.strftime('%Y-%m-%d') if query_format is query_format.DAY else \
         date.strftime('%Y-%m') if query_format is query_format.MONTH else date.strftime('%Y')
-    url = get_query_url(query_format) + str(station_id) + "&stname=" + url_station_name + "&datepicker=" + str(date)
+    url = get_query_url(query_format) + str(station_id) + "&stname=" + url_station_name + "&datepicker=" + str(date) + '&altitude=' + url_station_alt
     req = urllib.request.Request(url)
     f = urllib.request.urlopen(req)
     soup = BeautifulSoup(f.read().decode('utf-8', 'ignore'), "lxml")
@@ -98,7 +101,7 @@ def collect_weather_tw(station_csv_path: Path, output_path,
     with open(str(station_csv_path), 'r', encoding='utf-8') as station_csv:
         list_data = [line for line in station_csv if not line.startswith('#')]  # ignore row of starts with '#'
         df = pd.read_csv(StringIO(''.join(list_data)))
-        df = pd.DataFrame(df, columns=df.columns[0:2])  # get station_name and ID only
+        df = pd.DataFrame(df, columns=df.columns[0:3])  # get station_name, ID and altitude only
 
     os.makedirs(output_path.parent, exist_ok=True)
     with open(str(output_path.resolve()), 'w', encoding='utf-8-sig',  # utf8 with BOM
@@ -107,14 +110,14 @@ def collect_weather_tw(station_csv_path: Path, output_path,
                                 lineterminator="\r\n")
 
         need_write_title = True
-        for station_id, station_name in df.values:
+        for station_id, station_name, station_alt in df.values:
             print(f'handling the {station_name} ...')
 
             headers = ["Date", 'station name']
 
             for delta in generator_begin_to_end(end_date, begin_date, query_format):
                 day = begin_date + get_delta_day(delta, query_format)  # datetime.timedelta(days=delta)
-                weather_dict, title_list, title_detail_list = get_weather(day, station_id, station_name,
+                weather_dict, title_list, title_detail_list = get_weather(day, station_id, station_name, station_alt,
                                                                           query_format, convert2num)
 
                 if weather_dict == {}:
